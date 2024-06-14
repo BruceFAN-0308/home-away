@@ -9,6 +9,8 @@ import PropertyRating from "@/components/card/PropertyRating";
 import BookingCalendar from "@/components/properties/BookingCalendar";
 import PropertyDetails from "@/components/properties/PropertyDetail";
 import UserInfo from "@/components/properties/UserInfo";
+import {Separator} from "@/components/ui/separator";
+import Description from "@/components/properties/Description";
 
 async function PropertyDetail({params}: { params: { id: string } }) {
 
@@ -17,7 +19,8 @@ async function PropertyDetail({params}: { params: { id: string } }) {
         redirect('/')
     }
     const {guests, bedrooms, beds, baths} = propertyDetail;
-
+    const firstName = propertyDetail.profile.firstName;
+    const profileImage = propertyDetail.profile.profileImage
     return (
         <div>
             <BreadCrumbs name={propertyDetail.name}/>
@@ -36,7 +39,9 @@ async function PropertyDetail({params}: { params: { id: string } }) {
                         <PropertyRating propertyId={propertyDetail.id} inPage/>
                     </div>
                     <PropertyDetails details={propertyDetail}/>
-                    <UserInfo profile={propertyDetail.profile}/>
+                    <UserInfo profile={{firstName, profileImage}}/>
+                    <Separator/>
+                    <Description description={propertyDetail.description}/>
                 </div>
                 <div className="lg:col-span-4 flex flex-col items-center">
                     <BookingCalendar/>
