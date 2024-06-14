@@ -5,9 +5,6 @@ import {SubmitButton} from "@/components/form/Button";
 import {createProfileAction} from "@/utils/actions";
 import {currentUser} from "@clerk/nextjs/server";
 import {redirect} from "next/navigation";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
-import {Button} from "@/components/ui/button";
-import {Icon} from "@radix-ui/react-select";
 
 
 async function CreateProfilePage() {
