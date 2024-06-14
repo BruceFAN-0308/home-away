@@ -11,6 +11,18 @@ import PropertyDetails from "@/components/properties/PropertyDetail";
 import UserInfo from "@/components/properties/UserInfo";
 import {Separator} from "@/components/ui/separator";
 import Description from "@/components/properties/Description";
+import Amenities from "@/components/properties/Amenities";
+import dynamic from "next/dynamic";
+import {Skeleton} from "@/components/ui/skeleton";
+
+
+const DynamicMap = dynamic(
+    () => import('@/components/properties/PropertyMap'),
+    {
+        ssr: false,
+        loading: () => <Skeleton className="h-[400px] w-full"/>
+    }
+)
 
 async function PropertyDetail({params}: { params: { id: string } }) {
 
@@ -42,6 +54,9 @@ async function PropertyDetail({params}: { params: { id: string } }) {
                     <UserInfo profile={{firstName, profileImage}}/>
                     <Separator/>
                     <Description description={propertyDetail.description}/>
+                    <Amenities propertyAmenities={propertyDetail.amenities}/>
+                    <DynamicMap countryCode={propertyDetail.country}/>
+                    {/*<DynamicMap countryCode={propertyDetail.country}/>*/}
                 </div>
                 <div className="lg:col-span-4 flex flex-col items-center">
                     <BookingCalendar/>
