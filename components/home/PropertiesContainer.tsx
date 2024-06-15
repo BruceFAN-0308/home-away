@@ -1,6 +1,6 @@
 import React from 'react';
 import {fetchProperty} from "@/utils/actions";
-import {PropertyCardProps} from "@/utils/type";
+import {PropertyCardProps} from "@/utils/types";
 import EmptyList from "@/components/home/EmptyList";
 import PropertiesList from "@/components/home/PropertiesList";
 

@@ -250,8 +250,14 @@ export async function fetchPropertyDetail(propertyId: string) {
             id: propertyId
         },
         include: {
-            profile: true
-        }
+            profile: true,
+            bookings: {
+                select: {
+                    checkIn: true,
+                    checkOut: true,
+                },
+            },
+        },
     });
     return property;
 }
@@ -348,4 +354,28 @@ export async function findExistingReview(userId: string, propertyId: string) {
     });
     console.log("hello" + count)
     return count;
+}
+
+export async function fetchPropertyBooking(id: string) {
+    const property = await db.property.findUnique({
+        where: {
+            id: id
+        },
+        select: {
+            profile: {
+                select: {
+                    firstName: true,
+                    profileImage: true,
+                },
+            },
+            // bookings: {
+            //     select:{
+            //         checkIn: true,
+            //         checkOut: true,
+            //     }
+            // }
+
+        }
+    });
+    return property;
 }

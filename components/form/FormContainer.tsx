@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useEffect} from 'react';
-import {actionFunction} from "@/utils/type";
+import {actionFunction} from "@/utils/types";
 import {useFormState} from "react-dom";
 import {useToast} from "@/components/ui/use-toast";
 

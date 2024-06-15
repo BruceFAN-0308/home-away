@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CountryFlagAndName from './CountryFlagAndName';
 import PropertyRating from './PropertyRating';
-import {PropertyCardProps} from '@/utils/type';
+import {PropertyCardProps} from '@/utils/types';
 import {formatCurrency} from '@/utils/format';
 import FavoriteToggleButton from "@/components/card/FavoriteToggleButton";
 import Rating from "@/components/form/Rating";

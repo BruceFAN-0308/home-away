@@ -1,5 +1,5 @@
 'use client';
-import {type actionFunction} from '@/utils/type';
+import {type actionFunction} from '@/utils/types';
 import {useState} from "react";
 import {LuUser2} from "react-icons/lu";
 import Image from "next/image";

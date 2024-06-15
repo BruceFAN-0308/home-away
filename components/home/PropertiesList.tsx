@@ -1,5 +1,5 @@
 import React from 'react';
-import {PropertyCardProps} from "@/utils/type";
+import {PropertyCardProps} from "@/utils/types";
 import PropertyCard from "@/components/card/PropertyCard";
 
 function PropertiesList({properties}: { properties: PropertyCardProps[] }) {
