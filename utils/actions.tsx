@@ -6,6 +6,7 @@ import db from "@/utils/db";
 import {redirect} from "next/navigation";
 import {revalidatePath} from "next/cache";
 import {uploadImage} from "@/utils/supabase";
+import {calculateTotals} from "@/utils/calculateTotals";
 
 export async function getAuthUser() {
     const user = await currentUser();
@@ -356,26 +357,44 @@ export async function findExistingReview(userId: string, propertyId: string) {
     return count;
 }
 
-export async function fetchPropertyBooking(id: string) {
-    const property = await db.property.findUnique({
-        where: {
-            id: id
-        },
-        select: {
-            profile: {
-                select: {
-                    firstName: true,
-                    profileImage: true,
-                },
-            },
-            // bookings: {
-            //     select:{
-            //         checkIn: true,
-            //         checkOut: true,
-            //     }
-            // }
+export async function createBookingAction(propertyId: string, checkIn: Date, checkOut: Date) {
+    const user = await getAuthUser();
 
+    const property = await db.property.findUnique({
+        where: {id: propertyId},
+        select: {price: true},
+    });
+    if (!property) {
+        return {message: 'Property not found'};
+    }
+    const {orderTotal, totalNights} = calculateTotals({
+        checkIn,
+        checkOut,
+        price: property.price,
+    });
+
+    try {
+        const booking = await db.booking.create({
+            data: {
+                checkIn,
+                checkOut,
+                orderTotal,
+                totalNights,
+                profileId: user.id,
+                propertyId,
+            },
+        });
+    } catch (error) {
+        return renderError(error);
+    }
+    redirect('/bookings');
+}
+
+export async function fetchBookingsByPropertyId(propertyId: string) {
+    const bookings = await db.booking.findMany({
+        where: {
+            propertyId: propertyId
         }
     });
-    return property;
+    return bookings;
 }

@@ -15,7 +15,7 @@ export const calculateTotals = ({
     const subTotal = totalNights * price;
     const cleaning = 21;
     const service = 40;
-    const tax = subTotal * 0.1;
+    const tax = subTotal * 0.13;
     const orderTotal = subTotal + cleaning + service + tax;
     return {totalNights, subTotal, cleaning, service, tax, orderTotal};
 };

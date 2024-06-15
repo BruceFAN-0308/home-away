@@ -1,68 +1,55 @@
-'use client'
+'use client';
+import { Calendar } from '@/components/ui/calendar';
+import { useEffect, useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
+import { DateRange } from 'react-day-picker';
+import { useProperty } from '@/utils/store';
 
-import React, {useEffect, useState} from 'react';
+import {
+    generateDisabledDates,
+    generateDateRange,
+    defaultSelected,
+    generateBlockedPeriods,
+} from '@/utils/calendar';
 
-import {defaultSelected} from "@/utils/calendar";
-import {Calendar} from "@/components/ui/calendar";
-import {DateRange} from "react-day-picker";
-import {useProperty} from "@/utils/store";
-import {fetchBookingsByPropertyId} from "@/utils/actions";
-
-async function BookingCalendar() {
-    const state = useProperty((state) => state);
+function BookingCalendar() {
     const currentDate = new Date();
-    const [range, setRange] = useState<DateRange | undefined>(defaultSelected);
-    const [bookings, setBookings] = useState<any[]>([]);
 
-    const isDateDisabled = (date: Date): boolean => {
-        let isBooked = false;
-        //
-        if (bookings) {
-            const bookedDates = getBookedDates(bookings);
-            if (bookedDates.includes(date)) {
-                isBooked = true;
-            }
-        }
-        // do not compare date directly, must use getDate() to get the day, because that will make today is not available
-        return date.getDate() < currentDate.getDate() || isBooked;
-    }
+    const [range, setRange] = useState<DateRange | undefined>(defaultSelected);
+
+    const bookings = useProperty((state) => state.bookings);
+    const blockedPeriods = generateBlockedPeriods({
+        bookings,
+        today: currentDate,
+    });
+    const { toast } = useToast();
+    const unavailableDates = generateDisabledDates(blockedPeriods);
 
     useEffect(() => {
-        useProperty.setState({range});
+        const selectedRange = generateDateRange(range);
+        const isDisabledDateIncluded = selectedRange.some((date) => {
+            if (unavailableDates[date]) {
+                setRange(defaultSelected);
+                toast({
+                    description: 'Some dates are booked. Please select again.',
+                });
+                return true;
+            }
+            return false;
+        });
+        useProperty.setState({ range });
     }, [range]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const bookings = await fetchBookingsByPropertyId(state.propertyId);
-            setBookings(bookings);
-        };
-        fetchData();
-        console.log(bookings)
-    }, []);
-
     return (
-        <Calendar mode="range" defaultMonth={currentDate} selected={range}
-                  onSelect={setRange} className="mb-4" disabled={isDateDisabled}/>
+        <Calendar
+            mode='range'
+            defaultMonth={currentDate}
+            selected={range}
+            onSelect={setRange}
+            className='mb-4'
+            // add disabled
+            disabled={blockedPeriods}
+        />
     );
 }
-
-// a function to help me filter the bookings, to get the arrays, the arrays has all date is booked
-function getBookedDates(bookings: any[]): Date[] {
-    const bookedDates: Date[] = [];
-
-    bookings.forEach(booking => {
-        const currentDate = new Date(booking.checkIn);
-        const checkOutDate = new Date(booking.checkOut);
-
-        while (currentDate <= checkOutDate) {
-            bookedDates.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-    });
-
-    return bookedDates;
-}
-
-
 export default BookingCalendar;
-

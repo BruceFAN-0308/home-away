@@ -1,14 +1,14 @@
 import {PrismaClient} from '@prisma/client';
 
-// const prismaClientSingleton = () => {
-//     return new PrismaClient({
-//         log: ['query', 'info', 'warn', 'error'],
-//     })
-// };
-
 const prismaClientSingleton = () => {
-    return new PrismaClient()
+    return new PrismaClient({
+        log: ['query', 'info', 'warn', 'error'],
+    })
 };
+
+// const prismaClientSingleton = () => {
+//     return new PrismaClient()
+// };
 
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;

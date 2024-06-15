@@ -1,4 +1,3 @@
-'use client'
 import React from 'react';
 import {useProperty} from "@/utils/store";
 import BookingForm from "@/components/booking/BookingForm";
