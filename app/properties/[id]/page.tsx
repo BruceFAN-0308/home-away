@@ -1,5 +1,5 @@
 import React from 'react';
-import {fetchPropertyDetail} from "@/utils/actions";
+import {fetchPropertyDetail, findExistingReview, getAuthUser} from "@/utils/actions";
 import {redirect} from "next/navigation";
 import BreadCrumbs from "@/components/properties/BreadCrumbs";
 import FavoriteToggleButton from "@/components/card/FavoriteToggleButton";
@@ -14,6 +14,8 @@ import Description from "@/components/properties/Description";
 import Amenities from "@/components/properties/Amenities";
 import dynamic from "next/dynamic";
 import {Skeleton} from "@/components/ui/skeleton";
+import SubmitReview from "@/components/reviews/SubmitReview";
+import PropertyReviews from "@/components/reviews/PropertyReviews";
 
 
 const DynamicMap = dynamic(
@@ -33,6 +35,11 @@ async function PropertyDetail({params}: { params: { id: string } }) {
     const {guests, bedrooms, beds, baths} = propertyDetail;
     const firstName = propertyDetail.profile.firstName;
     const profileImage = propertyDetail.profile.profileImage
+
+    const user = await getAuthUser();
+    const isNotOwner = propertyDetail.profile.clerkId !== user.id;
+
+    const reviewDoesNotExist = user.id && isNotOwner && await findExistingReview(user.id, propertyDetail.id) === 0;
     return (
         <div>
             <BreadCrumbs name={propertyDetail.name}/>
@@ -56,12 +63,14 @@ async function PropertyDetail({params}: { params: { id: string } }) {
                     <Description description={propertyDetail.description}/>
                     <Amenities propertyAmenities={propertyDetail.amenities}/>
                     <DynamicMap countryCode={propertyDetail.country}/>
-                    {/*<DynamicMap countryCode={propertyDetail.country}/>*/}
                 </div>
                 <div className="lg:col-span-4 flex flex-col items-center">
                     <BookingCalendar/>
                 </div>
             </section>
+            {reviewDoesNotExist &&
+                <SubmitReview propertyId={propertyDetail.id}/>}
+            <PropertyReviews propertyId={propertyDetail.id}/>
         </div>
     );
 }

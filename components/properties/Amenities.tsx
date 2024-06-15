@@ -6,7 +6,6 @@ function Amenities({propertyAmenities}: { propertyAmenities: string }) {
 
     const amenitiesList: Amenity[] = JSON.parse(propertyAmenities);
 
-    console.log(amenitiesList)
     const noAmenities = amenitiesList.every((item) => !item.selected)
     if (noAmenities) {
         return null;

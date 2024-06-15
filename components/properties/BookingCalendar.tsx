@@ -7,7 +7,6 @@ import {Calendar} from "@/components/ui/calendar";
 function BookingCalendar() {
 
     const currentDate = new Date();
-    console.log("hello" + currentDate)
     const defaultRange: DateRange = {
         from: undefined,
         to: undefined,

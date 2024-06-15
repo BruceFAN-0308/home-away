@@ -10,7 +10,7 @@ async function UserIcon() {
         <>
             {
                 profileImage ?
-                    <Image src={profileImage} alt="profileImage" className="w-6 h-6 rounded-full object-cover"/>
+                    <Image width={6} height={6} src={profileImage} alt="profileImage" className="w-6 h-6 rounded-full object-cover"/>
                 : <LuUser2 className="w-6 h-6 bg-primary rounded-full text-white"></LuUser2>
             }
 

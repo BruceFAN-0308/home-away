@@ -5,6 +5,7 @@ import PropertyRating from './PropertyRating';
 import {PropertyCardProps} from '@/utils/type';
 import {formatCurrency} from '@/utils/format';
 import FavoriteToggleButton from "@/components/card/FavoriteToggleButton";
+import Rating from "@/components/form/Rating";
 
 function PropertyCard({property}: { property: PropertyCardProps }) {
     const {name, image, price} = property;
@@ -17,7 +18,7 @@ function PropertyCard({property}: { property: PropertyCardProps }) {
                 <div className='relative h-[300px] mb-2 overflow-hidden rounded-md'>
                     <Image
                         src={image}
-                        fill
+                        fill={true}
                         sizes='(max-width:768px) 100vw, 50vw'
                         alt={name}
                         className='rounded-md object-cover transform group-hover:scale-110 transition-transform duration-500'
@@ -48,5 +49,4 @@ function PropertyCard({property}: { property: PropertyCardProps }) {
         </article>
     );
 }
-
 export default PropertyCard;

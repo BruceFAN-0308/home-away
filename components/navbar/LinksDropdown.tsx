@@ -50,7 +50,9 @@ function LinksDropdown() {
                         })}
                         <DropdownMenuSeparator/>
                         <DropdownMenuItem>
-                            <SignOutButton/>
+                            <Link href={'/'}>
+                                <SignOutButton/>
+                            </Link>
                         </DropdownMenuItem>
                     </SignedIn>
 
