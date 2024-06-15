@@ -390,11 +390,45 @@ export async function createBookingAction(propertyId: string, checkIn: Date, che
     redirect('/bookings');
 }
 
-export async function fetchBookingsByPropertyId(propertyId: string) {
+export async function fetchBookings() {
+    const user = await getAuthUser();
     const bookings = await db.booking.findMany({
         where: {
-            propertyId: propertyId
+            profileId: user.id,
+        },
+        include: {
+            property: {
+                select: {
+                    id: true,
+                    name: true,
+                    country: true,
+                }
+            }
+        },
+        orderBy: {
+            createdAt: 'desc'
         }
+
     });
     return bookings;
+}
+
+
+export async function deleteBookingAction(prevState: { bookingId: string }) {
+    const { bookingId } = prevState;
+    const user = await getAuthUser();
+
+    try {
+        const result = await db.booking.delete({
+            where: {
+                id: bookingId,
+                profileId: user.id,
+            },
+        });
+
+        revalidatePath('/bookings');
+        return { message: 'Booking deleted successfully' };
+    } catch (error) {
+        return renderError(error);
+    }
 }
