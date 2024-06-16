@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react';
 import FormContainer from "@/components/form/FormContainer";
 import {createPropertyAction} from "@/utils/actions";

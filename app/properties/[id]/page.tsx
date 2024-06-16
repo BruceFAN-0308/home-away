@@ -66,7 +66,7 @@ async function PropertyDetail({params}: { params: { id: string } }) {
                     </div>
                     <PropertyDetails details={propertyDetail}/>
                     <UserInfo profile={{firstName, profileImage}}/>
-                    <Separator/>
+                    <Separator className="mt-4"/>
                     <Description description={propertyDetail.description}/>
                     <Amenities propertyAmenities={propertyDetail.amenities}/>
                     <DynamicMap countryCode={propertyDetail.country}/>

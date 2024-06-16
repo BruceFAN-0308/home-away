@@ -38,8 +38,8 @@ async function RentalsPage() {
                                     </Link>
                                 </TableCell>
                                 <TableCell>{price}</TableCell>
-                                <TableCell>{totalNightsSum}</TableCell>
-                                <TableCell>${orderTotalSum}</TableCell>
+                                <TableCell>{totalNightsSum ? totalNightsSum : 0}</TableCell>
+                                <TableCell>${orderTotalSum ? orderTotalSum : 0}</TableCell>
                                 <TableCell className="flex gap-2">
                                     <Link href={`/rentals/edit/${id}`}>
                                         <IconButton actionType='edit'></IconButton>
