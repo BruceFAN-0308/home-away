@@ -12,9 +12,12 @@ import UserIcon from "@/components/navbar/UserIcon";
 import {links} from "@/utils/links";
 import Link from "next/link";
 import {SignedIn, SignedOut, SignInButton, SignOutButton} from "@clerk/nextjs";
+import {auth} from "@clerk/nextjs/server";
 
 
 function LinksDropdown() {
+    const {userId} = auth();
+    const isAdminUser = userId === process.env.ADMIN_USER_ID;
     return (
         <>
             <DropdownMenu>
@@ -41,13 +44,20 @@ function LinksDropdown() {
                     </SignedOut>
                     <SignedIn>
                         {links.map((link) => {
-                            return (
-                                // eslint-disable-next-line react/jsx-key
-                                <DropdownMenuItem key={link.href}>
-                                    <Link className="w-full capitalize" href={link.href}>{link.label}</Link>
-                                </DropdownMenuItem>
-                            )
-                        })}
+                                if (link.label === 'admin' && !isAdminUser) {
+                                    return null
+                                }
+                                ;
+                                return (
+                                    <DropdownMenuItem key={link.href}>
+                                        <Link href={link.href} className='capitalize w-full'>
+                                            {link.label}
+                                        </Link>
+                                    </DropdownMenuItem>
+                                );
+                            }
+                        )
+                        }
                         <DropdownMenuSeparator/>
                         <DropdownMenuItem>
                             <Link href={'/'}>
@@ -59,7 +69,6 @@ function LinksDropdown() {
                 </DropdownMenuContent>
             </DropdownMenu>
         </>
-
     );
 }
 

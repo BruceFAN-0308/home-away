@@ -7,6 +7,7 @@ import {redirect} from "next/navigation";
 import {revalidatePath} from "next/cache";
 import {uploadImage} from "@/utils/supabase";
 import {calculateTotals} from "@/utils/calculateTotals";
+import {formatDate} from "@/utils/format";
 
 const getAdminUser = async () => {
     const user = await getAuthUser();
@@ -645,61 +646,33 @@ export const fetchStats = async () => {
         bookingsCount,
     };
 };
-//
-// export const fetchChartsData = async () => {
-//     await getAdminUser();
-//     const date = new Date();
-//     date.setMonth(date.getMonth() - 6);
-//     const sixMonthsAgo = date;
-//
-//     const bookings = await db.booking.findMany({
-//         where: {
-//             paymentStatus: true,
-//             createdAt: {
-//                 gte: sixMonthsAgo,
-//             },
-//         },
-//         orderBy: {
-//             createdAt: 'asc',
-//         },
-//     });
-//     const bookingsPerMonth = bookings.reduce((total, current) => {
-//         const date = formatDate(current.createdAt, true);
-//         const existingEntry = total.find((entry) => entry.date === date);
-//         if (existingEntry) {
-//             existingEntry.count += 1;
-//         } else {
-//             total.push({ date, count: 1 });
-//         }
-//         return total;
-//     }, [] as Array<{ date: string; count: number }>);
-//     return bookingsPerMonth;
-// };
-//
-// export const fetchReservationStats = async () => {
-//     const user = await getAuthUser();
-//
-//     const properties = await db.property.count({
-//         where: {
-//             profileId: user.id,
-//         },
-//     });
-//
-//     const totals = await db.booking.aggregate({
-//         _sum: {
-//             orderTotal: true,
-//             totalNights: true,
-//         },
-//         where: {
-//             property: {
-//                 profileId: user.id,
-//             },
-//         },
-//     });
-//
-//     return {
-//         properties,
-//         nights: totals._sum.totalNights || 0,
-//         amount: totals._sum.orderTotal || 0,
-//     };
-// };
+
+export const fetchChartsData = async () => {
+    await getAdminUser();
+    const date = new Date();
+    date.setMonth(date.getMonth() - 6);
+    const sixMonthsAgo = date;
+
+    const bookings = await db.booking.findMany({
+        where: {
+            // paymentStatus: true,
+            createdAt: {
+                gte: sixMonthsAgo,
+            },
+        },
+        orderBy: {
+            createdAt: 'asc',
+        },
+    });
+    const bookingsPerMonth = bookings.reduce((total, current) => {
+        const date = formatDate(current.createdAt, true);
+        const existingEntry = total.find((entry) => entry.date === date);
+        if (existingEntry) {
+            existingEntry.count += 1;
+        } else {
+            total.push({ date, count: 1 });
+        }
+        return total;
+    }, [] as Array<{ date: string; count: number }>);
+    return bookingsPerMonth;
+};
