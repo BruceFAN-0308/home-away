@@ -415,7 +415,7 @@ export async function fetchBookings() {
 
 
 export async function deleteBookingAction(prevState: { bookingId: string }) {
-    const { bookingId } = prevState;
+    const {bookingId} = prevState;
     const user = await getAuthUser();
 
     try {
@@ -427,7 +427,84 @@ export async function deleteBookingAction(prevState: { bookingId: string }) {
         });
 
         revalidatePath('/bookings');
-        return { message: 'Booking deleted successfully' };
+        return {message: 'Booking deleted successfully'};
+    } catch (error) {
+        return renderError(error);
+    }
+}
+
+export const fetchRentals = async () => {
+    const user = await getAuthUser();
+    const rentals = await db.property.findMany({
+        where: {
+            profileId: user.id,
+        },
+        select: {
+            id: true,
+            name: true,
+            price: true,
+        },
+    });
+
+    const rentalsWithBookingSums = await Promise.all(
+        rentals.map(async (rental) => {
+            const totalNightsSum = await db.booking.aggregate({
+                where: {
+                    propertyId: rental.id,
+                    // paymentStatus: true,
+                },
+                _sum: {
+                    totalNights: true,
+                },
+            });
+
+            const orderTotalSum = await db.booking.aggregate({
+                where: {
+                    propertyId: rental.id,
+                    // paymentStatus: true,
+                },
+                _sum: {
+                    orderTotal: true,
+                },
+            });
+
+            return {
+                ...rental,
+                totalNightsSum: totalNightsSum._sum.totalNights,
+                orderTotalSum: orderTotalSum._sum.orderTotal,
+            };
+        })
+    );
+
+    console.log(rentalsWithBookingSums);
+    return rentalsWithBookingSums;
+};
+
+export const fetchRentalDetails = async (propertyId: string) => {
+    const user = await getAuthUser();
+
+    return db.property.findUnique({
+        where: {
+            id: propertyId,
+            profileId: user.id,
+        },
+    });
+};
+
+export async function deleteRentalAction(prevState: { propertyId: string }) {
+    const { propertyId } = prevState;
+    const user = await getAuthUser();
+
+    try {
+        await db.property.delete({
+            where: {
+                id: propertyId,
+                profileId: user.id,
+            },
+        });
+
+        revalidatePath('/rentals');
+        return { message: 'Rental deleted successfully' };
     } catch (error) {
         return renderError(error);
     }
