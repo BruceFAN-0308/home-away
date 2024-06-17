@@ -19,7 +19,6 @@ function ConfirmBooking() {
                 </Button>
             </SignInButton>
         );
-
     return (
         <section>
             <FormContainer action={() => createBookingAction(propertyId, checkIn, checkOut)}>

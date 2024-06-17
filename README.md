@@ -75,3 +75,5 @@ npx prisma db push
 4. Implemented user registration and login functionalities using **Clerk**, including **OAuth2.0 third-party logins**, including Google, GitHub, and Facebook.
 
 5. Used **Vercel** for continuous integration and deployment, ensuring quick launch and stable operation of the project.
+
+6. Used **Stripe** for payment processing, enabling users to book listings and pay for services securely.
