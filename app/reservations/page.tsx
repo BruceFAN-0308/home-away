@@ -14,10 +14,13 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import Stats from '@/components/reservations/Stats';
+import {log} from "node:util";
 async function ReservationsPage() {
     const reservations = await fetchReservations();
     if (reservations.length === 0) return <EmptyList />;
 
+
+    console.log("hello world")
     return (
         <>
             <Stats />
