@@ -13,8 +13,9 @@ import Description from "@/components/properties/Description";
 import Amenities from "@/components/properties/Amenities";
 import dynamic from "next/dynamic";
 import {Skeleton} from "@/components/ui/skeleton";
-import SubmitReview from "@/components/reviews/SubmitReview";
 import PropertyReviews from "@/components/reviews/PropertyReviews";
+import {currentUser} from "@clerk/nextjs/server";
+import SubmitReview from "@/components/reviews/SubmitReview";
 
 
 const DynamicMap = dynamic(
@@ -43,10 +44,13 @@ async function PropertyDetail({params}: { params: { id: string } }) {
     const firstName = propertyDetail.profile.firstName;
     const profileImage = propertyDetail.profile.profileImage
 
-    const user = await getAuthUser();
-    const isNotOwner = propertyDetail.profile.clerkId !== user.id;
+    let user = await currentUser();
+    if (user) {
+        user = await getAuthUser();
+    }
+    const isNotOwner = user && propertyDetail.profile.clerkId !== user.id;
 
-    const reviewDoesNotExist = user.id && isNotOwner && await findExistingReview(user.id, propertyDetail.id) === 0;
+    const reviewDoesNotExist = user && user.id && isNotOwner && await findExistingReview(user.id, propertyDetail.id) === 0;
     return (
         <div>
             <BreadCrumbs name={propertyDetail.name}/>
